@@ -1,8 +1,8 @@
 /*
- * Title: uberTabs 0.2
+ * Title: uberTabs 0.3
  *
  * Description:
- * Eliminates ambiguity from uberSmith DE 2.4 Tabs, by
+ * Eliminates ambiguity from uberSmith DE 3.1.5 Tabs, by
  * dynamically labelling Device manager pages, Client manager pages,
  * Support manager ticket (Trouble Ticket) pages & Support manager (Ticket Lists) lists
  * as such in the browser tab, eliminating confusion when many tabs are
@@ -11,6 +11,9 @@
  * Author: Joe J Hacobian
  *
  * Copyright (C) 2014  Joe J Hacobian
+ *
+ * For uncompressed source, visit my uberTabs repo on Github:
+ * https://github.com/Node0/uberTabs
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,19 +37,17 @@ while (Boolean(str.match(/%/))) {
 
 function tabPainter(uberSmithManager) {
     "use strict";
-    var breadCrumbTable,
-        breadCrumbForm,
-        breadCrumbsToScan,
-        supportMgrDynamicSpanContent,
+    var supportMgrDynamicSpanContent,
         ticketListCheck,
         singleTicketCheck,
+        clientMgrSearchBoxDivContent,
         clientIdMatch,
         clientId,
+        deviceMgrSearchBoxDivContent,
         deviceIdMatch,
         deviceId,
         supportMgrContext,
-        ticketNumberMatch,
-        i;
+        ticketNumberMatch;
 
     if (uberSmithManager === 'supportManager') {
         /* Do DOM acrobatics over & over because uberSmith's support manager ticketlists/ticketViews use
@@ -76,38 +77,21 @@ function tabPainter(uberSmithManager) {
 
     }
 
+    //Sniff the searchbox area for a device id.
     if (uberSmithManager === 'deviceManager') {
-        breadCrumbTable = window.document.getElementsByTagName('table')[2];
-        //console.log(breadCrumbTable);
-
-        breadCrumbForm = breadCrumbTable.getElementsByTagName('form')[0];
-        breadCrumbsToScan = breadCrumbForm.getElementsByTagName('a');
-
-        for (i = 0; i < breadCrumbsToScan.length; i++) {
-            var strDm = breadCrumbsToScan[i].href;
-            //console.log(strDm);
-            deviceIdMatch = strDm.match(/(device)(\=)(\d{2,4})/);
-            if (deviceIdMatch) {
-                deviceId = deviceIdMatch[3];
-            }
+        deviceMgrSearchBoxDivContent = window.document.querySelector('div.SearchBoxText a[href*="view.php?device"]').toString();
+        deviceIdMatch = deviceMgrSearchBoxDivContent.match(/(device)(\=)(\d{2,4})/);
+        if (deviceIdMatch) {
+            deviceId = deviceIdMatch[3];
         }
         window.document.getElementsByTagName('title')[0].innerHTML = "DID: " + deviceId;
     }
-
+    //Sniff the searchbox area for a client id.
     if (uberSmithManager === 'clientManager') {
-        breadCrumbTable = window.document.getElementsByTagName('table')[2];
-        //console.log(breadCrumbTable);
-
-        breadCrumbForm = breadCrumbTable.getElementsByTagName('form')[0];
-        breadCrumbsToScan = breadCrumbForm.getElementsByTagName('a');
-
-        for (i = 0; i < breadCrumbsToScan.length; i++) {
-            var strCm = breadCrumbsToScan[i].href;
-            //console.log(strCm);
-            clientIdMatch = strCm.match(/(clientid)(\=)(\d{2,4})/);
-            if (clientIdMatch) {
-                clientId = clientIdMatch[3];
-            }
+        clientMgrSearchBoxDivContent = window.document.querySelector('div.SearchBoxText a[href*="client_profile.php?clientid"]').toString();
+        clientIdMatch = clientMgrSearchBoxDivContent.match(/(clientid)(\=)(\d{2,4})/);
+        if (clientIdMatch) {
+            clientId = clientIdMatch[3];
         }
         window.document.getElementsByTagName('title')[0].innerHTML = "CID: " + clientId;
     }
