@@ -9,7 +9,6 @@
  * simultaneously open.
  *
  * Author: Joe J Hacobian
- *
  * Copyright (C) 2014  Joe J Hacobian
  *
  * For uncompressed source, visit my uberTabs repo on Github:
